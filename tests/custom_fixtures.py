@@ -23,7 +23,13 @@ def client():
 @pytest.fixture
 def aws_client():
     def _create_client(service_name):
-        return boto3.client(service_name, endpoint_url= TestingConfig.AWS_ENDPOINT_URL)
+        session = boto3.Session(
+            aws_access_key_id=TestingConfig.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=TestingConfig.AWS_SECRET_ACCESS_KEY,
+            region_name=TestingConfig.AWS_REGION_NAME
+        )
+
+        return session.client(service_name, endpoint_url= TestingConfig.AWS_ENDPOINT_URL)
     return _create_client
 
 def create_test_bucket(func):
