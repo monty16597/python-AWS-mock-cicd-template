@@ -1,0 +1,7 @@
+*.pyc
+__pycache__/
+venv/
+/.vscode/
+
+# Ignore localstack main folder
+volume/

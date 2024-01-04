@@ -1,0 +1,10 @@
+# FILEPATH: /mnt/hgfs/Projects/pytest_advance/.dockerignore
+
+# Python cache
+__pycache__/
+
+# pytest cache
+.pytest_cache/
+
+# localstack volume
+volume/
