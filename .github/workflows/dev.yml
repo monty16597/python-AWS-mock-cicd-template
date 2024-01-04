@@ -32,7 +32,7 @@ jobs:
           junit2html test-results.xml pytest_report.html
 
       - name: Comment PR with pytest report
-        uses: actions/github-script@v4
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
