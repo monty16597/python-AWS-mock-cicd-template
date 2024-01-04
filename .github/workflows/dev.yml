@@ -43,12 +43,12 @@ jobs:
             const reportPath = path.join(process.env.GITHUB_WORKSPACE, 'pytest_report.html');
             const reportContent = fs.readFileSync(reportPath, 'utf8');
             const comment = `<!DOCTYPE html><html><body>${reportContent}</body></html>`;
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: comment
-            });
+            })
 
       - name: Set workflow status
         if: ${{ steps.pytest.outcome == 'success' }}
