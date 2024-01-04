@@ -6,9 +6,9 @@ from flask import current_app
 with current_app.app_context():
     # boto3 session with AWS credentials ##
     session = boto3.Session(
-        aws_access_key_id=current_app.config.get('AWS_ACCESS_KEY_ID', 'TEST'),
-        aws_secret_access_key=current_app.config.get('AWS_SECRET_ACCESS_KEY', 'TEST'),
-        region_name=current_app.config.get('AWS_REGION_NAME', 'us-east-1')
+        aws_access_key_id=current_app.config.get('AWS_ACCESS_KEY_ID'),
+        aws_secret_access_key=current_app.config.get('AWS_SECRET_ACCESS_KEY'),
+        region_name=current_app.config.get('AWS_REGION_NAME')
     )
 
     s3_client = session.client('s3', endpoint_url=current_app.config.get('AWS_ENDPOINT_URL'))

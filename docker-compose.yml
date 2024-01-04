@@ -22,6 +22,9 @@ services:
     image: pdf-generator-app
     environment:
       - AWS_ENDPOINT_URL=http://localstack-main:4566
+      - AWS_ACCESS_KEY_ID='TEST'
+      - AWS_SECRET_ACCESS_KEY='TEST'
+      - AWS_REGION_NAME='us-east-1'
     ports:
       - 5000:5000
     depends_on:
