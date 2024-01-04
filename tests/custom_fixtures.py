@@ -4,6 +4,7 @@ from config import TestingConfig
 
 import sys
 import os
+from config import TestingConfig
 
 # Add the parent directory of app to the Python path
 current_dir = os.path.dirname(os.path.dirname(__file__))
@@ -13,7 +14,7 @@ from app import create_app
 
 @pytest.fixture
 def client():
-    app = create_app('tests.config.TestingConfig')
+    app = create_app(TestingConfig)
     app.config['TESTING'] = True
     with app.test_client() as client:
         with app.app_context():
