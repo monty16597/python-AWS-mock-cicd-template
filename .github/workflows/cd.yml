@@ -28,15 +28,27 @@ jobs:
                 docker build -t ${{ secrets.DOCKER_REPONAME}}:prod-${{ github.ref_name }} .
                 docker push ${{ secrets.DOCKER_REPONAME}}:prod-${{ github.ref_name }}
             fi
-        
-        - name: Deploy to EC2 using ssh key
-          uses: appleboy/ssh-action@master
-          with:
-            host: ${{ secrets.EC2_HOST }}
-            username: ${{ secrets.EC2_USERNAME }}
-            key: ${{ secrets.EC2_SSH_KEY }}
-            script: |
-              docker pull ${{ secrets.DOCKER_REPONAME}}:${{ github.ref_name }}-${{ github.sha }}
-              docker stop pdf-generator || true
-              docker rm pdf-generator || true
-              docker run -d -p 5000:5000 --name pdf-generator ${{ secrets.DOCKER_REPONAME}}:${{ github.ref_name }}-${{ github.sha }}
+
+    deploy:
+      environment: ${{ github.ref_name }}
+      runs-on: ubuntu-latest
+      steps:
+      - name: Deploy to EC2 using ssh key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKER_REPONAME}}:${{ github.ref_name }}-${{ github.sha }}
+            docker stop pdf-generator || true
+            docker rm pdf-generator || true
+            docker run -d -p 80:5000 --name pdf-generator ${{ secrets.DOCKER_REPONAME}}:${{ github.ref_name }}-${{ github.sha }}
+      
+      - name: Check health status with 5 retries
+        run: |
+          for i in {1..5}; do
+            curl -s -o /dev/null -w "%{http_code}" http://${{ secrets.EC2_HOST }}:80 && exit 0
+            sleep 5
+          done
+          exit 1
