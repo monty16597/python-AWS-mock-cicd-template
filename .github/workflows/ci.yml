@@ -1,0 +1,103 @@
+name: Run CI on release branches
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - prod
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name }}-${{ github.event.number }}
+  cancel-in-progress: true
+
+jobs:
+  linting:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: |
+          pip install flake8
+
+      - name: Run flake8
+        id: flake8
+        run: |
+          flake8 > flake8-report.md
+          if [ -s flake8-report.md ]; then exit 1; fi
+
+      - name: Post flake8 report
+        if: always() && steps.flake8.conclusion == 'failure'
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const fs = require('fs');
+            const flake8Report = fs.readFileSync('flake8-report.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `# Flake8 Report:\n\`\`\`\n${flake8Report}\n\`\`\``
+            });
+
+  unit-testing:
+    runs-on: ubuntu-latest
+    needs: linting
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest-md
+
+      - name: Start localstack
+        run: docker-compose up -d localstack
+
+      - name: Run pytest
+        id: pytest
+        run: pytest --md report.md
+
+      - name: Post pytest report
+        uses: actions/github-script@v5
+        if: always()
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const fs = require('fs');
+            const testResults = fs.readFileSync('report.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `# Test Results:\n\`\`\`\n${testResults}\n\`\`\``
+            });
+
+      - name: Assign reviewers
+        uses: monty16597/github-pr-reviewer-request-action@main
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repo_name: ${{ github.repository }}
+          pr_number: ${{ github.event.number }}
+          pr_reviewers: 'alonjamohit77icloud'
+          do_comment: true
+          custom_comment: 'Please review this PR @alonjamohit77icloud'

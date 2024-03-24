@@ -1,0 +1,27 @@
+[flake8]
+ignore=
+    # line too long
+    E501,
+    #line break after binary operator
+    W504,
+    #redefinition of unused
+    F811,
+    #module level import not at top of file
+    E402,
+exclude=
+    .git,
+    __pycache__,
+    .venv,
+    .vscode,
+    .github,
+    .idea,
+    .pytest_cache,
+    .mypy_cache,
+    .tox,
+    .eggs,
+    *.egg,
+    *.egg-info,
+    build,
+    dist,
+    venv,
+    tests
