@@ -48,8 +48,9 @@ jobs:
             });
 
   
-  reviewers:
+  reporting:
     runs-on: ubuntu-latest
+    needs: unit-testing
     permissions:
       pull-requests: write
     steps:
