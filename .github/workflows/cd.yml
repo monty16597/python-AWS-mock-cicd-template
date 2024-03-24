@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - dev
+      - prod
 
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref_name }}
@@ -38,4 +39,4 @@ jobs:
               docker pull ${{ secrets.DOCKER_REPONAME}}:${{ github.ref_name }}-${{ github.sha }}
               docker stop ${{ secrets.DOCKER_REPONAME}} || true
               docker rm ${{ secrets.DOCKER_REPONAME}} || true
-              docker run -d -p 80:80 --name ${{ secrets.DOCKER_REPONAME}} ${{ secrets.DOCKER_REPONAME}}:${{ github.ref_name }}-${{ github.sha }}
+              docker run -d -p 5000:5000 --name pdf-generator ${{ secrets.DOCKER_REPONAME}}:${{ github.ref_name }}-${{ github.sha }}
