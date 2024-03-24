@@ -41,7 +41,7 @@ jobs:
 
       - name: Run pytest
         id: pytest
-        run: pytest -v --md report.md
+        run: pytest --md report.md
 
       - name: Post pytest report
         uses: actions/github-script@v5
