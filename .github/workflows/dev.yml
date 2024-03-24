@@ -31,7 +31,7 @@ jobs:
           if [ $? -ne 0 ]; then exit 1; fi
 
       - name: Post flake8 report
-        if: steps.flake8.outcome != 'success'
+        if: steps.flake8.conclusion == 'failure'
         uses: actions/github-script@v5
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
