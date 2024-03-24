@@ -47,7 +47,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `# Flake8 Report:\n\`\`\`\n${flake8Report}\n\`\`\``
+              body: `# Linting Failed:\n\`\`\`\n${flake8Report}\n\`\`\``
             });
 
   unit-testing:
