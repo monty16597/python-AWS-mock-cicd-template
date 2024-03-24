@@ -16,7 +16,7 @@ jobs:
         uses: monty16597/github-pr-reviewer-request-action@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          repo_name: ${{ github.repository_owner }}/${{ github.repository }}
+          repo_name: ${{ github.repository }}
           pr_number: ${{ github.event.number }}
           pr_reviewers: 'alonjamohit77icloud'
           do_comment: true
