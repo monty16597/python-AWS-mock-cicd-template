@@ -34,7 +34,7 @@ jobs:
 
       - name: Post pytest report
         uses: actions/github-script@v5
-        continue-on-error: true
+        if: always()
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
