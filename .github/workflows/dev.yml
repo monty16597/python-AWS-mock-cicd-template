@@ -29,7 +29,7 @@ jobs:
         run: flake8 > flake8-report.md || true
 
       - name: Post flake8 report
-        if: steps.flake8.conclusion == 'failure'
+        if: steps.flake8.outcome == 'failure'
         uses: actions/github-script@v5
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
