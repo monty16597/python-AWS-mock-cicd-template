@@ -5,3 +5,10 @@ venv/
 
 # Ignore localstack main folder
 volume/
+
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl
+
+*ssh*
