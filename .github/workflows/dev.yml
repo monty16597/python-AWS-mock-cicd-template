@@ -6,11 +6,58 @@ on:
       - dev
 
 jobs:
-  pytest:
+  unit-testing:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest-md
+
+      - name: Start localstack
+        run: docker-compose up -d localstack
+
+      - name: Run pytest
+        id: pytest
+        run: |
+          pytest --junitxml=test-results.xml
+
+      - name: Convert pytest results to markdown
+        id: convert
+        run: |
+          python convert.py test-results.xml report.md
+
+      - name: Post pytest report
+        uses: actions/github-script@v5
+        continue-on-error: true
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const fs = require('fs');
+            const testResults = fs.readFileSync('report.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Test Results:\n\`\`\`\n${testResults}\n\`\`\``
+            });
+
+  
+  reviewers:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - name: Assign reviewers
         uses: monty16597/github-pr-reviewer-request-action@main
@@ -20,53 +67,4 @@ jobs:
           pr_number: ${{ github.event.number }}
           pr_reviewers: 'alonjamohit77icloud'
           do_comment: true
-          custom_comment: 'Please review this PR ${PR_REVIEWERS}'
-
-      # - name: Checkout code
-      #   uses: actions/checkout@v2
-
-      # - name: Set up Python
-      #   uses: actions/setup-python@v2
-      #   with:
-      #     python-version: 3.x
-
-      # - name: Install dependencies
-      #   run: pip install -r requirements.txt
-
-      # - name: Start localstack
-      #   run: docker-compose up -d localstack
-
-      # - name: Run pytest
-      #   id: pytest
-      #   run: |
-      #     pytest --junitxml=test-results.xml
-      #     pip install -q junit2html
-      #     junit2html test-results.xml pytest_report.html
-
-      # - name: Assign reviewers
-      #   uses: monty16597/github-pr-reviewer-request-action@main
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     repo_name: ${{ github.repository_owner }}/${{ github.repository }}
-      #     pr_number: ${{ github.event.number }}
-      #     pr_reviewers: 'alonjamohit77icloud'
-      #     do_comment: true
-
-      # - name: Set workflow status
-      #   if: ${{ steps.pytest.outcome == 'success' }}
-      #   uses: actions/github-script@v4
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      #     script: |
-      #       github.actions.createOrUpdateCheckRun({
-      #         name: 'pytest',
-      #         head_sha: context.sha,
-      #         status: 'completed',
-      #         conclusion: 'success',
-      #         output: {
-      #           title: 'All tests passed',
-      #           summary: 'All tests passed successfully.'
-      #         }
-      #       });
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          custom_comment: 'Please review this PR @alonjamohit77icloud'
