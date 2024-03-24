@@ -26,7 +26,7 @@ jobs:
 
       - name: Run flake8
         id: flake8
-        run: flake8 > flake8-report.md || true
+        run: flake8 > flake8-report.md && exit 1 || true
 
       - name: Post flake8 report
         if: steps.flake8.outcome == 'failure'
