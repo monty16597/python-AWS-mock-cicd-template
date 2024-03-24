@@ -37,6 +37,6 @@ jobs:
             key: ${{ secrets.EC2_SSH_KEY }}
             script: |
               docker pull ${{ secrets.DOCKER_REPONAME}}:${{ github.ref_name }}-${{ github.sha }}
-              docker stop ${{ secrets.DOCKER_REPONAME}} || true
-              docker rm ${{ secrets.DOCKER_REPONAME}} || true
+              docker stop pdf-generator || true
+              docker rm pdf-generator || true
               docker run -d -p 5000:5000 --name pdf-generator ${{ secrets.DOCKER_REPONAME}}:${{ github.ref_name }}-${{ github.sha }}
