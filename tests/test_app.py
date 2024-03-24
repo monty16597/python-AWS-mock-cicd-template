@@ -10,7 +10,7 @@ def test_generate_pdf_and_upload_to_s3(client, aws_client):
     response = client.post('/generate_pdf', json=pdf_data)
 
     # Assertions
-    assert response.status_code == 404
+    assert response.status_code == 200
     data = json.loads(response.data)
     assert 'download_url' in data
     # Add more assertions as needed
