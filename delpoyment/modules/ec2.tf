@@ -6,10 +6,10 @@ resource "aws_instance" "ec2" {
   subnet_id = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.ec2.id]
   tags = {
-    Name = "ec2"
+    Name = "${var.project_name}-${var.env}-app"
   }
 
-  iam_instance_profile = "ec2-s3-ssm"
+  iam_instance_profile = aws_iam_instance_profile.ec2-s3-ssm.name
   user_data = <<-EOF
               #!/bin/bash
               yum update -y
@@ -22,7 +22,7 @@ resource "aws_instance" "ec2" {
 
 # security group for ec2 instance
 resource "aws_security_group" "ec2" {
-  name = "ec2"
+  name = "${var.project_name}-${var.env}-ec2-sg"
   vpc_id = aws_vpc.vpc.id
 
     egress {
@@ -65,4 +65,9 @@ data "aws_ami_ids" "amazon-linux2" {
     name = "name"
     values = ["amzn2-ami-hvm-2.0.*-x86_64*"]
   }
+}
+
+resource "aws_eip" "eip" {
+  instance = aws_instance.ec2.id
+  vpc = true
 }

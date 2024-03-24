@@ -44,7 +44,7 @@ jobs:
             docker pull ${{ secrets.DOCKER_REPONAME}}:${{ github.ref_name }}-${{ github.sha }}
             docker stop pdf-generator || true
             docker rm pdf-generator || true
-            docker run -d -p 80:5000 --name pdf-generator ${{ secrets.DOCKER_REPONAME}}:${{ github.ref_name }}-${{ github.sha }}
+            docker run -d -p 80:5000 --name pdf-generator -e AWS_S3_BUCKET_NAME=${{ secrets.CONFIG_AWS_S3_BUCKET_NAME }} ${{ secrets.DOCKER_REPONAME}}:${{ github.ref_name }}-${{ github.sha }}
       
       - name: Check health status with 5 retries
         run: |
