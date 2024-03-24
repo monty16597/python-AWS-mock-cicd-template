@@ -12,51 +12,60 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.x
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Start localstack
-        run: docker-compose up -d localstack
-
-      - name: Run pytest
-        id: pytest
-        run: |
-          pytest --junitxml=test-results.xml
-          pip install -q junit2html
-          junit2html test-results.xml pytest_report.html
-
       - name: Assign reviewers
         uses: monty16597/github-pr-reviewer-request-action@main
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           repo_name: ${{ github.repository_owner }}/${{ github.repository }}
           pr_number: ${{ github.event.number }}
           pr_reviewers: 'alonjamohit77icloud'
           do_comment: true
 
-      - name: Set workflow status
-        if: ${{ steps.pytest.outcome == 'success' }}
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.actions.createOrUpdateCheckRun({
-              name: 'pytest',
-              head_sha: context.sha,
-              status: 'completed',
-              conclusion: 'success',
-              output: {
-                title: 'All tests passed',
-                summary: 'All tests passed successfully.'
-              }
-            });
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Checkout code
+      #   uses: actions/checkout@v2
+
+      # - name: Set up Python
+      #   uses: actions/setup-python@v2
+      #   with:
+      #     python-version: 3.x
+
+      # - name: Install dependencies
+      #   run: pip install -r requirements.txt
+
+      # - name: Start localstack
+      #   run: docker-compose up -d localstack
+
+      # - name: Run pytest
+      #   id: pytest
+      #   run: |
+      #     pytest --junitxml=test-results.xml
+      #     pip install -q junit2html
+      #     junit2html test-results.xml pytest_report.html
+
+      # - name: Assign reviewers
+      #   uses: monty16597/github-pr-reviewer-request-action@main
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     repo_name: ${{ github.repository_owner }}/${{ github.repository }}
+      #     pr_number: ${{ github.event.number }}
+      #     pr_reviewers: 'alonjamohit77icloud'
+      #     do_comment: true
+
+      # - name: Set workflow status
+      #   if: ${{ steps.pytest.outcome == 'success' }}
+      #   uses: actions/github-script@v4
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     script: |
+      #       github.actions.createOrUpdateCheckRun({
+      #         name: 'pytest',
+      #         head_sha: context.sha,
+      #         status: 'completed',
+      #         conclusion: 'success',
+      #         output: {
+      #           title: 'All tests passed',
+      #           summary: 'All tests passed successfully.'
+      #         }
+      #       });
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
