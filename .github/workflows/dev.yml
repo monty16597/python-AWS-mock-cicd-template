@@ -26,7 +26,6 @@ jobs:
 
       - name: Run flake8
         id: flake8
-        # continue-on-error: true
         run: |
           flake8 > flake8-report.md
           if [ -s flake8-report.md ]; then exit 1; fi
@@ -43,7 +42,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Flake8 Report:\n\`\`\`\n${flake8Report}\n\`\`\``
+              body: `# Flake8 Report:\n\`\`\`\n${flake8Report}\n\`\`\``
             });
 
   unit-testing:
@@ -85,7 +84,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Test Results:\n\`\`\`\n${testResults}\n\`\`\``
+              body: `# Test Results:\n\`\`\`\n${testResults}\n\`\`\``
             });
 
   
