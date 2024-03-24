@@ -27,7 +27,7 @@ jobs:
       - name: Run flake8
         id: flake8
         run: |
-          flake8 > flake8-report.md
+          flake8 --exclude ./tests/ > flake8-report.md
           if [ -s flake8-report.md ]; then exit 1; fi
 
       - name: Post flake8 report

@@ -1,5 +1,5 @@
 import json
-from custom_fixtures import create_test_bucket
+from custom_fixtures import client, aws_client, create_test_bucket
 
 
 @create_test_bucket
