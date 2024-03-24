@@ -1,10 +1,10 @@
 resource "aws_iam_instance_profile" "ec2-s3-ssm" {
-  name = "ec2-s3-ssm"
+  name = "${var.project_name}-${var.env}-ec2-s3-ssm"
   role = aws_iam_role.ec2-s3-ssm.name
 }
 
 resource "aws_iam_role" "ec2-s3-ssm" {
-  name = "ec2-s3-ssm"
+  name = "${var.project_name}-${var.env}-ec2-s3-ssm"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -22,7 +22,7 @@ EOF
 }
 
 resource "aws_iam_policy" "ec2-s3-ssm" {
-  name = "ec2-s3-ssm"
+  name = "${var.project_name}-${var.env}-ec2-s3-ssm"
   description = "Allow S3 and SSM access"
   policy = <<EOF
 {
