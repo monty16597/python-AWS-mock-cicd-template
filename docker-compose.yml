@@ -25,6 +25,7 @@ services:
       - AWS_ACCESS_KEY_ID='TEST'
       - AWS_SECRET_ACCESS_KEY='TEST'
       - AWS_REGION_NAME='us-east-1'
+      - AWS_S3_BUCKET_NAME='pdf-generator-bucket'
     ports:
       - 5000:5000
     depends_on: 
