@@ -1,6 +1,6 @@
 from flask import Flask
-import os, sys
 from app.config import AppConfig
+
 
 def create_app(config=AppConfig):
     app = Flask(__name__)
@@ -8,9 +8,10 @@ def create_app(config=AppConfig):
     # Configuration setup
     app.config.from_object(config)
     app.app_context().push()
-    
+
     # Blueprint registration
     from .blueprints.pdf import main_bp
+
     app.register_blueprint(main_bp)
 
     # Other setup (extensions, middleware, etc.) can go here
