@@ -37,10 +37,10 @@ jobs:
         uses: monty16597/github-pr-reviewer-request-action@v0.0.2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          repo_owner: ${{ github.repository_owner }}
-          repo_name: ${{ github.repository }}
+          repo_name: ${{ github.repository_owner }}/${{ github.repository }}
           pr_number: ${{ github.event.number }}
           pr_reviewers: 'alonjamohit77icloud'
+          do_comment: true
 
       - name: Set workflow status
         if: ${{ steps.pytest.outcome == 'success' }}
