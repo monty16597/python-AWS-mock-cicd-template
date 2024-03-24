@@ -1,9 +1,10 @@
-name: Run pytest on dev branch
+name: Run CI on release branches
 
 on:
   pull_request:
     branches:
       - dev
+      - prod
 
 jobs:
   linting:
@@ -87,13 +88,6 @@ jobs:
               body: `# Test Results:\n\`\`\`\n${testResults}\n\`\`\``
             });
 
-  
-  reporting:
-    runs-on: ubuntu-latest
-    needs: unit-testing
-    permissions:
-      pull-requests: write
-    steps:
       - name: Assign reviewers
         uses: monty16597/github-pr-reviewer-request-action@main
         with:
