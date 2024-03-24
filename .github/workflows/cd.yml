@@ -30,6 +30,7 @@ jobs:
             fi
 
     deploy:
+      needs: build
       environment: ${{ github.ref_name }}
       runs-on: ubuntu-latest
       steps:
