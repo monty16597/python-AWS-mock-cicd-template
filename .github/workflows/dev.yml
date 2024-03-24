@@ -28,7 +28,7 @@ jobs:
         id: flake8
         run: |
           flake8 > flake8-report.md
-          if [ $? -ne 0 ]; then exit 1; fi
+          if [ -s flake8-report.md ]; then exit 1; fi
 
       - name: Post flake8 report
         if: steps.flake8.conclusion == 'failure'
