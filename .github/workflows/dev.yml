@@ -20,7 +20,7 @@ jobs:
           pr_number: ${{ github.event.number }}
           pr_reviewers: 'alonjamohit77icloud'
           do_comment: true
-          custom_message: 'Please review this PR ${PR_REVIEWERS}'
+          custom_comment: 'Please review this PR ${PR_REVIEWERS}'
 
       # - name: Checkout code
       #   uses: actions/checkout@v2
