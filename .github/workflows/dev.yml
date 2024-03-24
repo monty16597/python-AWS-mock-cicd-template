@@ -33,22 +33,14 @@ jobs:
           pip install -q junit2html
           junit2html test-results.xml pytest_report.html
 
-      - name: Comment PR with pytest report
-        uses: actions/github-script@v7
+      - name: Assign reviewers
+        uses: monty16597/github-pr-reviewer-request-action@v0.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const fs = require('fs');
-            const path = require('path');
-            const reportPath = path.join(process.env.GITHUB_WORKSPACE, 'pytest_report.html');
-            const reportContent = fs.readFileSync(reportPath, 'utf8');
-            const comment = `<!DOCTYPE html><html><body>${reportContent}</body></html>`;
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            })
+          repo_owner: ${{ github.repository_owner }}
+          repo_name: ${{ github.repository }}
+          pr_number: ${{ github.event.number }}
+          pr_reviewers: 'alonjamohit77icloud'
 
       - name: Set workflow status
         if: ${{ steps.pytest.outcome == 'success' }}
