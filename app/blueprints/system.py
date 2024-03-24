@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-system_bp = Blueprint("main", __name__)
+system_bp = Blueprint("system", __name__)
 
 
 @system_bp.route("/", methods=["GET"])

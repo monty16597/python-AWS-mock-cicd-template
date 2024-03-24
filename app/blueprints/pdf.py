@@ -3,7 +3,7 @@ from flask import Blueprint, request, jsonify
 from reportlab.pdfgen import canvas
 from ..controllers import upload_pdf_file, generate_presigned_url
 
-main_bp = Blueprint("main", __name__)
+main_bp = Blueprint("pdf", __name__)
 
 
 @main_bp.route("/generate_pdf", methods=["POST"])
