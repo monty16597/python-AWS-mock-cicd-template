@@ -34,7 +34,7 @@ jobs:
           junit2html test-results.xml pytest_report.html
 
       - name: Assign reviewers
-        uses: monty16597/github-pr-reviewer-request-action@v0.0.2
+        uses: monty16597/github-pr-reviewer-request-action@main
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           repo_name: ${{ github.repository_owner }}/${{ github.repository }}
