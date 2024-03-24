@@ -4,14 +4,13 @@ on:
   push:
     branches:
       - dev
-  release:
-    types: [published]
 
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref_name }}
 
 jobs:
     build:
+        environment: ${{ github.ref_name }}
         runs-on: ubuntu-latest
         steps:
         - uses: actions/checkout@v2
@@ -24,7 +23,19 @@ jobs:
             if [ "${{ github.ref_name }}" == "dev" ]; then
                 docker build -t ${{ secrets.DOCKER_REPONAME}}:${{ github.ref_name }}-${{ github.sha }} .
                 docker push ${{ secrets.DOCKER_REPONAME}}:${{ github.ref_name }}-${{ github.sha }}
-            elif [ "${{ github.event_name }}" == "release" ]; then
+            elif [ "${{ github.ref_name }}" == "prod" ]; then
                 docker build -t ${{ secrets.DOCKER_REPONAME}}:prod-${{ github.ref_name }} .
                 docker push ${{ secrets.DOCKER_REPONAME}}:prod-${{ github.ref_name }}
             fi
+        
+        - name: Deploy to EC2 using ssh key
+          uses: appleboy/ssh-action@master
+          with:
+            host: ${{ secrets.EC2_HOST }}
+            username: ${{ secrets.EC2_USERNAME }}
+            key: ${{ secrets.EC2_SSH_KEY }}
+            script: |
+              docker pull ${{ secrets.DOCKER_REPONAME}}:${{ github.ref_name }}-${{ github.sha }}
+              docker stop ${{ secrets.DOCKER_REPONAME}} || true
+              docker rm ${{ secrets.DOCKER_REPONAME}} || true
+              docker run -d -p 80:80 --name ${{ secrets.DOCKER_REPONAME}} ${{ secrets.DOCKER_REPONAME}}:${{ github.ref_name }}-${{ github.sha }}
