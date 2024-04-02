@@ -12,3 +12,7 @@ terraform.tfstate.backup
 .terraform.lock.hcl
 
 *ssh*
+
+.pytest_cache
+
+test.py

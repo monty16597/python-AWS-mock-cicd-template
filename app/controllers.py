@@ -1,5 +1,6 @@
 import boto3
 from botocore.exceptions import ClientError
+from botocore.client import Config
 
 from flask import current_app
 
@@ -12,7 +13,7 @@ with current_app.app_context():
     )
 
     s3_client = session.client(
-        "s3", endpoint_url=current_app.config.get("AWS_ENDPOINT_URL")
+        "s3", endpoint_url=current_app.config.get("AWS_ENDPOINT_URL"), config=Config(signature_version='s3v4')
     )
 
     def upload_pdf_file(pdf_filename):

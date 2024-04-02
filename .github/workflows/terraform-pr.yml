@@ -1,0 +1,30 @@
+# Run github workflow if code changes are pushed for deployment directory only
+on:
+  push:
+    paths:
+      - 'deployment/**'
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v2
+        
+        # Install terraform
+        - name: Install Terraform
+          run: |
+            curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+            sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+            sudo apt-get update && sudo apt-get install terraform
+            terraform -v
+        
+        # Initialize terraform
+        - name: Terraform Init
+          run: terraform init deployment
+        
+        # Plan terraform
+        - name: Terraform Plan
+          run: terraform plan deployment
+        
+        # Apply terraform
+        - name: Terraform Apply
+          run: terraform apply -auto-approve deployment
