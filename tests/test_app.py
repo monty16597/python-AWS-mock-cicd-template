@@ -1,9 +1,9 @@
 import json
-from custom_fixtures import client, aws_client, create_test_bucket
+from fixtures import client, aws_client, create_test_bucket, delete_bucket
 
 
-@create_test_bucket
 def test_generate_pdf_and_upload_to_s3(client, aws_client):
+    create_test_bucket(aws_client=aws_client)
     # Mocking the S3 upload and presigned URL generation
     pdf_data = {"first_name": "John", "last_name": "Doe"}
 
@@ -14,7 +14,7 @@ def test_generate_pdf_and_upload_to_s3(client, aws_client):
     assert response.status_code == 200
     data = json.loads(response.data)
     assert "download_url" in data
-    # Add more assertions as needed
+    delete_bucket(aws_client=aws_client)
 
 
 def test_invalid_request_method(client):
